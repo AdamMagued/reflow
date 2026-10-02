@@ -41,6 +41,34 @@ func TestDedent(t *testing.T) {
 			Input:    "",
 			Expected: "",
 		},
+		{
+			Input:    "This is an example\n\t\n  with no shared indent.",
+			Expected: "This is an example\n\t\n  with no shared indent.",
+		},
+		{
+			Input:    "  with no shared indent.\n\t\nThis is an example",
+			Expected: "  with no shared indent.\n\t\nThis is an example",
+		},
+		{
+			Input:    "  This is an example\n  with shared indent.",
+			Expected: "This is an example\nwith shared indent.",
+		},
+		{
+			Input:    "    line 1 with spaces\n  line 2 with spaces",
+			Expected: "  line 1 with spaces\nline 2 with spaces",
+		},
+		{
+			Input:    "This is line 1\n  This is line 2",
+			Expected: "This is line 1\n  This is line 2",
+		},
+		{
+			Input:    "    line 1\n  \n    line 2",
+			Expected: "line 1\n\nline 2",
+		},
+		{
+			Input:    "  line 1\r\n\r\n  line 2\r\n",
+			Expected: "line 1\r\n\r\nline 2\r\n",
+		},
 	}
 
 	for i, tc := range tt {
