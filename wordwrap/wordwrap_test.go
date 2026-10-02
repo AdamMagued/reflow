@@ -128,6 +128,31 @@ func TestWordWrap(t *testing.T) {
 			3,
 			true,
 		},
+		// Non-breaking spaces (U+00A0 and U+202F) do not serve as break points:
+		{
+			"foo\u00a0bar baz",
+			"foo\u00a0bar\nbaz",
+			8,
+			true,
+		},
+		{
+			"foo\u202fbar baz",
+			"foo\u202fbar\nbaz",
+			8,
+			true,
+		},
+		{
+			"test foo\u00a0bar",
+			"test\nfoo\u00a0bar",
+			8,
+			true,
+		},
+		{
+			"foo\u00a0bar",
+			"foo\u00a0bar",
+			4,
+			true,
+		},
 	}
 
 	for i, tc := range tt {
