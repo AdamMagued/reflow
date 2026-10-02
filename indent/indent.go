@@ -70,12 +70,16 @@ func (w *Writer) Write(b []byte) (int, error) {
 		} else {
 			if !w.skipIndent {
 				w.ansiWriter.ResetAnsi()
+				count := int(w.Indent)
+				if count < 0 {
+					count = 0
+				}
 				if w.IndentFunc != nil {
-					for i := 0; i < int(w.Indent); i++ {
+					for i := 0; i < count; i++ {
 						w.IndentFunc(w.ansiWriter)
 					}
 				} else {
-					_, err := w.ansiWriter.Write([]byte(strings.Repeat(" ", int(w.Indent))))
+					_, err := w.ansiWriter.Write([]byte(strings.Repeat(" ", count)))
 					if err != nil {
 						return 0, err
 					}

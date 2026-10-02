@@ -58,6 +58,13 @@ func TestMargin(t *testing.T) {
 			9,
 			3,
 		},
+		// Large uint width that overflows int:
+		{
+			"foobar",
+			"  foobar",
+			^uint(0),
+			2,
+		},
 	}
 
 	for i, tc := range tt {
@@ -78,6 +85,14 @@ func TestMargin(t *testing.T) {
 func TestMarginString(t *testing.T) {
 	actual := String("foobar", 10, 2)
 	expected := "  foobar  "
+	if actual != expected {
+		t.Errorf("expected:\n\n`%s`\n\nActual Output:\n\n`%s`", expected, actual)
+	}
+}
+
+func TestMarginLargeWidth(t *testing.T) {
+	actual := String("hello\nworld", ^uint(0), 2)
+	expected := "  hello\n  world"
 	if actual != expected {
 		t.Errorf("expected:\n\n`%s`\n\nActual Output:\n\n`%s`", expected, actual)
 	}

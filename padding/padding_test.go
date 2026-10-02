@@ -47,6 +47,12 @@ func TestPadding(t *testing.T) {
 			"\x1B[38;2;249;38;114mfoo   ",
 			6,
 		},
+		// Large uint padding that overflows int:
+		{
+			"foobar",
+			"foobar",
+			^uint(0),
+		},
 	}
 
 	for i, tc := range tt {
@@ -214,6 +220,29 @@ func TestWriter_Error(t *testing.T) {
 
 	if err := f.pad(); err != fakeErr {
 		t.Error(err)
+	}
+}
+
+func TestPaddingLargeWidth(t *testing.T) {
+	t.Parallel()
+
+	res := String("hello", ^uint(0))
+	if res != "hello" {
+		t.Errorf("expected %q, got %q", "hello", res)
+	}
+
+	f := NewWriter(^uint(0), func(w io.Writer) {
+		_, _ = w.Write([]byte("."))
+	})
+	_, err := f.Write([]byte("hello"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := f.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if f.String() != "hello" {
+		t.Errorf("expected %q, got %q", "hello", f.String())
 	}
 }
 

@@ -95,12 +95,16 @@ func (w *Writer) Write(b []byte) (int, error) {
 
 func (w *Writer) pad() error {
 	if w.Padding > 0 && uint(w.lineLen) < w.Padding {
+		count := int(w.Padding) - w.lineLen
+		if count < 0 {
+			count = 0
+		}
 		if w.PadFunc != nil {
-			for i := 0; i < int(w.Padding)-w.lineLen; i++ {
+			for i := 0; i < count; i++ {
 				w.PadFunc(w.ansiWriter)
 			}
 		} else {
-			_, err := w.ansiWriter.Write([]byte(strings.Repeat(" ", int(w.Padding)-w.lineLen)))
+			_, err := w.ansiWriter.Write([]byte(strings.Repeat(" ", count)))
 			if err != nil {
 				return err
 			}
