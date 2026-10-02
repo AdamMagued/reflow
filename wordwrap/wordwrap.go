@@ -130,9 +130,12 @@ func (w *WordWrap) Write(b []byte) (int, error) {
 			_, _ = w.space.WriteRune(c)
 		} else if inGroup(w.Breakpoints, c) {
 			// valid breakpoint
-			w.addSpace()
+			_, _ = w.word.WriteRune(c)
+			if w.lineLen+w.space.Len()+w.word.PrintableRuneWidth() > w.Limit &&
+				(w.word.PrintableRuneWidth() <= w.Limit || w.lineLen > 0) {
+				w.addNewLine()
+			}
 			w.addWord()
-			_, _ = w.buf.WriteRune(c)
 		} else {
 			// any other character
 			_, _ = w.word.WriteRune(c)
